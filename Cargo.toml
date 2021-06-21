@@ -35,3 +35,8 @@ simd = ["safe_arch"]
 
 # Allows loading and saving `Pixmap` as PNG.
 png-format = ["std", "png"]
+
+[profile.release]
+opt-level = 'z'
+lto = true
+codegen-units = 1
