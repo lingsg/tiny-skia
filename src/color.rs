@@ -37,7 +37,7 @@ impl ColorU8 {
 
     /// Returns color's red component.
     pub const fn red(self) -> u8 {
-        ((self.0 >> 0) & 0xFF) as u8
+        ((self.0 >> 16) & 0xFF) as u8
     }
 
     /// Returns color's green component.
@@ -47,7 +47,7 @@ impl ColorU8 {
 
     /// Returns color's blue component.
     pub const fn blue(self) -> u8 {
-        ((self.0 >> 16) & 0xFF) as u8
+        (self.0 & 0xFF) as u8
     }
 
     /// Returns color's alpha component.
@@ -200,9 +200,9 @@ impl core::fmt::Debug for PremultipliedColorU8 {
 /// - All values are in 0..=1 range.
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Color {
-    r: NormalizedF32,
-    g: NormalizedF32,
     b: NormalizedF32,
+    g: NormalizedF32,
+    r: NormalizedF32,
     a: NormalizedF32,
 }
 
@@ -336,7 +336,7 @@ impl Color {
     /// Converts into `ColorU8`.
     pub fn to_color_u8(&self) -> ColorU8 {
         let c = color_f32_to_u8(self.r, self.g, self.b, self.a);
-        ColorU8::from_rgba(c[0], c[1], c[2], c[3])
+        ColorU8::from_rgba(c[2], c[1], c[0], c[3])
     }
 }
 
@@ -349,9 +349,9 @@ impl Color {
 /// - RGB components are <= A.
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct PremultipliedColor {
-    r: NormalizedF32,
-    g: NormalizedF32,
     b: NormalizedF32,
+    g: NormalizedF32,
+    r: NormalizedF32,
     a: NormalizedF32,
 }
 
@@ -405,7 +405,7 @@ impl PremultipliedColor {
     /// Converts into `PremultipliedColorU8`.
     pub fn to_color_u8(&self) -> PremultipliedColorU8 {
         let c = color_f32_to_u8(self.r, self.g, self.b, self.a);
-        PremultipliedColorU8::from_rgba_unchecked(c[0], c[1], c[2], c[3])
+        PremultipliedColorU8::from_rgba_unchecked(c[2], c[1], c[0], c[3])
     }
 }
 
@@ -426,9 +426,9 @@ fn color_f32_to_u8(
     a: NormalizedF32,
 ) -> [u8; 4] {
     [
-        (r.get() * 255.0 + 0.5) as u8,
-        (g.get() * 255.0 + 0.5) as u8,
         (b.get() * 255.0 + 0.5) as u8,
+        (g.get() * 255.0 + 0.5) as u8,
+        (r.get() * 255.0 + 0.5) as u8,
         (a.get() * 255.0 + 0.5) as u8,
     ]
 }
